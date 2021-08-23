@@ -50,6 +50,28 @@ RSpec.describe User, type: :model do
   end
 
   describe '.authenticate_with_credentials' do
-    # examples for this class method here
+    it 'should login successfully with correct email and password' do
+      User.create(first_name: "Bob", last_name: "Kirk", email: "bob.kirk@gmail.com", password: "password", password_confirmation: "password")
+      user = User.authenticate_with_credentials("bob.kirk@gmail.com", "password")
+      expect(user).to be_truthy
+    end
+
+    it 'should fail to login with incorrect email and password' do
+      User.create(first_name: "Bob", last_name: "Kirk", email: "bob.kirk@gmail.com", password: "password", password_confirmation: "password")
+      user = User.authenticate_with_credentials("bob.kirk@gmail.com", "password2")
+      expect(user).to be_nil
+    end
+
+    it 'should authenticate with spaces around email' do
+      User.create(first_name: "Bob", last_name: "Kirk", email: "bob.kirk@gmail.com", password: "password", password_confirmation: "password")
+      user = User.authenticate_with_credentials("     bob.kirk@gmail.com      ", "password")
+      expect(user).to be_truthy
+    end
+
+    it 'should authenticate with email in wrong case' do
+      User.create(first_name: "Bob", last_name: "Kirk", email: "bob.kirk@gmail.com", password: "password", password_confirmation: "password")
+      user = User.authenticate_with_credentials("bob.kIRk@gmail.com", "password")
+      expect(user).to be_truthy
+    end
   end
 end
